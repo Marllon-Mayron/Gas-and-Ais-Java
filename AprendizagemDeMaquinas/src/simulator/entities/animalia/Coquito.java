@@ -242,7 +242,11 @@ public class Coquito extends SpecieAnimalia {
 				(int) getWidth(), (int) getHeight());
 	}
 	public void renderSmall(Graphics g) {
-		g.setColor(Color.white);
+		if(this.getGender().equals("Male")) {
+			g.setColor(Color.white);
+		}else{
+			g.setColor(Color.pink);
+		}		
 		g.drawString(this.ponto+ "", getPos_x() * (Window.WIDTH / Utils.numGrid) * Window.SCALE, ((getPos_y() * Window.HEIGHT / Utils.numGrid)) * Window.SCALE);
 	}
 

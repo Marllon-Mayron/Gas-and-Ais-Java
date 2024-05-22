@@ -4,6 +4,10 @@ import java.awt.Color;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,13 +18,13 @@ import simulator.entities.SpecieAnimalia;
 
 public class CsvControllers {
 
+	// PREPARAR DIRETÓRIO ONDE ARQUIVO VAI SER SALVO
+	public String projectDir = System.getProperty("user.dir");
+	public String resDir = projectDir + File.separator + "res";
+			
 	public void csvCreaturePerformance(SpecieAnimalia sa) {
-		String fileName = "Performances";
+		String fileName = "Performances.csv";
 		FileWriter fileWriter = null;
-
-		// PREPARAR DIRETÓRIO ONDE ARQUIVO VAI SER SALVO
-		String projectDir = System.getProperty("user.dir");
-		String resDir = projectDir + File.separator + "res";
 
 		File resDirectory = new File(resDir);
 		if (!resDirectory.exists()) {
@@ -69,12 +73,8 @@ public class CsvControllers {
 	}
 
 	public void csvCurrentDay(Ambiente ambiente, List<SpecieAnimalia> animals) {
-		String fileName = "CurrentDay-" + animals.get(0).getSpecie_name();
+		String fileName = "CurrentDays-" + animals.get(0).getSpecie_name()+".csv";
 		FileWriter fileWriter = null;
-
-		// PREPARAR DIRETÓRIO ONDE ARQUIVO VAI SER SALVO
-		String projectDir = System.getProperty("user.dir");
-		String resDir = projectDir + File.separator + "res";
 
 		File resDirectory = new File(resDir);
 		if (!resDirectory.exists()) {
@@ -122,8 +122,6 @@ public class CsvControllers {
 				colorsCounts.append((contagem + "-" + cor.getRed() + "-" + cor.getGreen() + "-" + cor.getBlue()+"|"));
 			}
 			
-			System.out.println(colorsCounts);
-			
 			moveRateAvarage = moveRateAvarage / animals.size();
 			visionRangeAvarage = visionRangeAvarage / animals.size();
 			// Escreve os dados da SpecieAnimalia
@@ -152,4 +150,20 @@ public class CsvControllers {
 		}
 	}
 
+	
+	 public void deleteAllFiles(String directoryPath) throws IOException {
+	        Path dir = Paths.get(directoryPath);
+
+	        if (Files.exists(dir) && Files.isDirectory(dir)) {
+	            try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
+	                for (Path entry : stream) {
+	                    if (Files.isRegularFile(entry)) {
+	                        Files.delete(entry);
+	                    }
+	                }
+	            }
+	        } else {
+	            System.out.println("O caminho especificado não é uma pasta válida.");
+	        }
+	    }
 }

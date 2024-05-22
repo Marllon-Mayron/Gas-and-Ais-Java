@@ -22,6 +22,8 @@ public class Ambiente {
 	public int sec = 0;
 	//VARIAVEL QUE CONTROLA QUANTO TEMPO VALE UM DIA
 	public int secDay = 5;
+	//VARIAVEL QUE VAI CONTROLAR QUANTOS DIAS DE TREINAMENTO
+	public int maxDays = 20;
 	public boolean[][] path = new boolean[Utils.numGrid][Utils.numGrid];
 	
 	private List<SpecieAnimalia> animals = new ArrayList<>();
@@ -38,7 +40,7 @@ public class Ambiente {
 		frame++;
 		if(frame == 60) {
 			sec++;
-			if(sec >= secDay) {
+			if(sec >= secDay && days <= maxDays) {
 				nextDay();
 				sec = 0;
 			}
@@ -62,22 +64,56 @@ public class Ambiente {
 			}
 			
 		}
-		int currentListSize = animals.size();
-		for(int i = 0; i < currentListSize; i++) {
-			//LIBERAR TEMPORADA DE REPRODUÇÃO DE ESPECIE
-			if(i%2 == 1) {
-				animals.get(i).reproduce(animals.get(i-1));
-				i++;
+		//VERIFICAR SE CHEGOU NO ULTIMO DIA, PARA GERAR A PERFORMANCE DOS QUE FICARAM VIVOS
+		if(this.getDays() == this.maxDays) {
+			for(int i = 0; i < animals.size(); i++) {
+				Utils.csvController.csvCreaturePerformance(animals.get(i));
 			}
+		}else {
+			int currentListSize = animals.size();
+			for(int i = 0; i < currentListSize; i++) {
+				//LIBERAR TEMPORADA DE REPRODUÇÃO DE ESPECIE
+				if(animals.get(i).getGender().equals("Female")) {
+					//DEFININDO A DISTANCIA INICIALMENTE COMO UM VALOR ACIMA DO PERMITIDO, POIS NÃO TEM COMO NASCER INDIVIDUO FORA DO MAPA
+					SpecieAnimalia mother = animals.get(i);
+					int minDistance = (Utils.numGrid * Utils.numGrid) + 1;
+					SpecieAnimalia tempFather = null;
+					//A FEMEA IRA SE REPRODUZIR COM O MACHO MAIS PRÓXIMO
+					for(int j = 0 ; j < currentListSize; j++) {				
+						//IGNORAR ELA MESMA
+						if(!(j == i)) {
+							//VERIFICAR SE TEM ALGUM MACHO POR PERTO
+							if(animals.get(j).getGender().equals("Male")) {
+								SpecieAnimalia father = animals.get(j);
+								int distance = Utils.heuristic(mother.getPos_x(), mother.getPos_y(),animals.get(j).getPos_x(), father.getPos_y());
+								//SÓ SERÃO CONSIDERADOS PRETENDENTES NO RAIO DE VISÃO DA FEMEA
+								if(mother.rangeColiddingAnimal(mother, father)) {
+									//PAI SERÁ O MAIS PRÓXIMO
+									if(minDistance > distance) {
+										minDistance = distance;
+										tempFather = father;
+									}
+								}							
+							}
+						}
+					}
+					//APÓS TODAS VALIDAÇÕES, SE ENCONTROU UM PARCEIRO, A REPRODUÇÃO OCORRERÁ
+					if(!(tempFather == null)) {
+						animals.get(i).reproduce(tempFather);
+					}					
+				}
+					
+			}
+			
+			//RESETAR COMIDAS
+			this.getPlants().clear();
+			//this.setNumPlants(this.getNumPlants()/2);
+			this.generateFoods();
+			
+			//REGISTRAR O NOVO DIA:
+			Utils.csvController.csvCurrentDay(this, this.getAnimals());
 		}
 		
-		//RESETAR COMIDAS
-		this.getPlants().clear();
-		//this.setNumPlants(this.getNumPlants()/2);
-		this.generateFoods();
-		
-		//REGISTRAR O NOVO DIA:
-		Utils.csvController.csvCurrentDay(this, this.getAnimals());
 	
 	}
 	public void generateFoods() {

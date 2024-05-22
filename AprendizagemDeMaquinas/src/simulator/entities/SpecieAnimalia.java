@@ -184,6 +184,7 @@ public class SpecieAnimalia {
 		if(dna.contains(",")) {
 			dna = dna.replace(",", ".");
 		}
+
 		return dna;
 	}
 
@@ -211,9 +212,11 @@ public class SpecieAnimalia {
 		// COLOCANDO O INDIVIDUO EM UM LUGAR QUE NÃO ESTEJA BLOQUEADO:
 		int tempx = 0;
 		int tempy = 0;
+		int distanceMother = 1;
 		do {
-			tempx = Utils.random.nextInt(Utils.numGrid);
-			tempy = Utils.random.nextInt(Utils.numGrid);
+			tempx = this.getPos_x() + Utils.random.nextInt(distanceMother);
+			tempy = this.getPos_y() + Utils.random.nextInt(distanceMother);
+			distanceMother++;
 		} while (son.getAmbiente().path[tempx][tempy]);
 		// ADICIONANDO INDIVIDUO A LISTA:
 		son.setPos_x(tempx);
@@ -262,7 +265,17 @@ public class SpecieAnimalia {
 		this.getAmbiente().path[getPos_x()][getPos_y()] = false;
 	}
 
-	public static boolean rangeColiddingFood(SpecieAnimalia e1, SpeciePlantae e2) {
+	public boolean rangeColiddingFood(SpecieAnimalia e1, SpeciePlantae e2) {
+		Rectangle e1Mask = new Rectangle((e1.getPos_x() - e1.getVision_range() / 2) * (Window.WIDTH / Utils.numGrid),
+				(e1.getPos_y() - e1.getVision_range() / 2) * (Window.HEIGHT / Utils.numGrid),
+				e1.getVision_range() * Window.WIDTH / Utils.numGrid,
+				e1.getVision_range() * Window.HEIGHT / Utils.numGrid);
+		Rectangle e2Mask = new Rectangle((int) e2.getPos_x() * (Window.WIDTH / Utils.numGrid),
+				(int) e2.getPos_y() * (Window.HEIGHT / Utils.numGrid), (int) e2.getWidth(), (int) e2.getHeight());
+
+		return e1Mask.intersects(e2Mask);
+	}
+	public boolean rangeColiddingAnimal(SpecieAnimalia e1, SpecieAnimalia e2) {
 		Rectangle e1Mask = new Rectangle((e1.getPos_x() - e1.getVision_range() / 2) * (Window.WIDTH / Utils.numGrid),
 				(e1.getPos_y() - e1.getVision_range() / 2) * (Window.HEIGHT / Utils.numGrid),
 				e1.getVision_range() * Window.WIDTH / Utils.numGrid,

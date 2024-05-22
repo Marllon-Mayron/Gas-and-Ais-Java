@@ -8,6 +8,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 import javax.swing.JFrame;
 
@@ -17,6 +18,7 @@ import simulator.entities.SpeciePlantae;
 import simulator.entities.animalia.Coquito;
 import simulator.entities.plantae.Brush;
 import simulator.enums.EatingPractices;
+import simulator.utils.CsvControllers;
 import simulator.utils.Utils;
 
 public class Window extends Canvas implements Runnable, KeyListener{
@@ -36,6 +38,12 @@ public class Window extends Canvas implements Runnable, KeyListener{
 	public static Ambiente jungle = new Ambiente(4, 30);
 
 	public Window() throws Exception {
+		try {
+            Utils.csvController.deleteAllFiles(Utils.csvController.resDir);
+            System.out.println("Todos os arquivos foram apagados com sucesso.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 		addKeyListener(this);
 		setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
 		initFrame();
