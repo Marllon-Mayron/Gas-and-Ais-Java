@@ -11,6 +11,8 @@ public class Utils {
 	public static boolean showRangeVision = false;
 	//TAMANHO DO MAPA
 	public static int numGrid = 30;
+	//CONTROLE DE CSV
+	public static CsvControllers csvController = new CsvControllers();
 	
 	//METODO PARA O CONTROLE DE MENSAGENS NO CONSOLE
 	public static void showMessages(String message, boolean breakLine) {

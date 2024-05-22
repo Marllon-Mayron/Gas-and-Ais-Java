@@ -25,6 +25,7 @@ public class Window extends Canvas implements Runnable, KeyListener{
 	public static JFrame frame;
 	private Thread thread;
 	private boolean isRunning = true;
+	//NÃO MEXER NO TAMANHO DA TELA
 	public static final int WIDTH = 240;
 	public static final int HEIGHT = 240;
 	public static final int SCALE = 3;
@@ -63,7 +64,8 @@ public class Window extends Canvas implements Runnable, KeyListener{
 			jungle.path[tempx][tempy] = true;
 
 		}
-		//jungle.getAnimals().get(0).reproduce(jungle.getAnimals().get(1));
+		//FAZER O MAPEAMENTO DO PRIMEIRO DIA
+		Utils.csvController.csvCurrentDay(jungle, jungle.getAnimals());
 	}
 
 	// CRIAR A JANELA
@@ -108,14 +110,14 @@ public class Window extends Canvas implements Runnable, KeyListener{
 
 	// GRÁFICO DA SIMULAÇÃO
 	public void render() {
-		BufferStrategy bs = this.getBufferStrategy();// Sequ�ncia de buffer para otimizar a renderiza��o, lidando com
-														// performace gr�fica
+		BufferStrategy bs = this.getBufferStrategy();
+
 		if (bs == null) {
 			this.createBufferStrategy(3);
 			return;
 		}
 
-		g = image.getGraphics();// Renderizar imagens na tela
+		g = image.getGraphics();
 		g.setColor(new Color(0, 0, 0));
 		g.fillRect(0, 0, WIDTH * SCALE, HEIGHT * SCALE);
 
@@ -144,7 +146,7 @@ public class Window extends Canvas implements Runnable, KeyListener{
 		}
 
 		g.setColor(Color.black);
-		g.dispose();// Limpar dados de imagem n�o usados
+		g.dispose();// LIMPAR DADOS DE IMAGENS NÃO USADOS || A PARTIR DAQUI OS GRAFICOS NÃO TERÃO O ZOOM DA SCALA
 		g = bs.getDrawGraphics();
 
 		g.drawImage(image, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);

@@ -52,6 +52,7 @@ public class Ambiente {
 		for(int i = 0; i < animals.size(); i++) {
 			//MATAR OS INDIVIDUOS QUE NÃO SE ALIMENTARAM
 			if(animals.get(i).isHungry()) {
+				Utils.csvController.csvCreaturePerformance(animals.get(i));
 				animals.get(i).death();
 				animals.remove(i);
 				i--;
@@ -70,10 +71,14 @@ public class Ambiente {
 			}
 		}
 		
-		
+		//RESETAR COMIDAS
 		this.getPlants().clear();
 		//this.setNumPlants(this.getNumPlants()/2);
 		this.generateFoods();
+		
+		//REGISTRAR O NOVO DIA:
+		Utils.csvController.csvCurrentDay(this, this.getAnimals());
+	
 	}
 	public void generateFoods() {
 		for (int i = 0; i < this.getNumPlants(); i++) {
