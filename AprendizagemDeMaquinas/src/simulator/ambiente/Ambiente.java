@@ -21,9 +21,9 @@ public class Ambiente {
 	private int frame = 0;
 	public int sec = 0;
 	//VARIAVEL QUE CONTROLA QUANTO TEMPO VALE UM DIA
-	public int secDay = 10;
+	public int secDay = 3;
 	//VARIAVEL QUE VAI CONTROLAR QUANTOS DIAS DE TREINAMENTO
-	public int maxDays = 20;
+	public int maxDays = 100;
 	public boolean[][] path = new boolean[Utils.numGrid][Utils.numGrid];
 	
 	private List<SpecieAnimalia> animals = new ArrayList<>();

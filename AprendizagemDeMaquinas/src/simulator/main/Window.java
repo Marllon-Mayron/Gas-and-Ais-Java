@@ -36,7 +36,7 @@ public class Window extends Canvas implements Runnable, KeyListener{
 	private Graphics g;
 
 	//MODIFIQUE AS QUANTIDADES DE CRIATURAS E ALIMENTOS AQUI
-	public static Ambiente jungle = new Ambiente(2, 20);
+	public static Ambiente jungle = new Ambiente(30, 30);
 
 	public Window() throws Exception {
 		try {

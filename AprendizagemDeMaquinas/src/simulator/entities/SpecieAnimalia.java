@@ -84,7 +84,7 @@ public class SpecieAnimalia {
 			this.colorNum = Utils.random.nextInt(6);
 			this.color = getColorList(colorNum);
 			// DEFINIR QUANTIDADES DE MOVIMENTOS POR SEGUNDO
-			this.move_rate = 2 + Utils.random.nextInt(10);
+			this.move_rate = 20 + Utils.random.nextInt(10);
 			// CRIAR O DNA COM AS CARACTERISTICAS ACIMA
 			this.dna = createDNA();
 		}
@@ -146,6 +146,10 @@ public class SpecieAnimalia {
 	}
 
 	public String checkMutation(String dna) {
+		int numMutation = 1;
+		if(Utils.random.nextBoolean()) {
+			numMutation = 3;
+		}
 		if (Utils.random.nextInt(100) + 1 < mutationPercent) {
 			// Separar tipo de alelo
 			char alleleType = dna.charAt(dna.length() - 1);
@@ -162,10 +166,10 @@ public class SpecieAnimalia {
 				}
 				// Definir se a mutação será boa ou ruim
 				if (Utils.random.nextBoolean()) {
-					alleleValue += 1;
+					alleleValue += Utils.random.nextInt(numMutation)+1;
 				} else {
-					if (alleleValue > 0) {
-						alleleValue -= 1;
+					if (alleleValue > 3) {
+						alleleValue -= Utils.random.nextInt(numMutation)+1;
 					}
 				}
 				// Formatar o valor de volta para a string, mantendo o formato original
@@ -206,18 +210,26 @@ public class SpecieAnimalia {
 			son.setMove_rate(Integer.parseInt(alelos[3]));
 			son.setVision_range(Integer.parseInt(alelos[4]));
 		} catch (NumberFormatException e) {
-			// Handle the exception, e.g., log an error or set default values
 			System.err.println("Error parsing alelos values: " + e.getMessage());
 		}
 		// COLOCANDO O INDIVIDUO EM UM LUGAR QUE NÃO ESTEJA BLOQUEADO:
 		int tempx = 0;
 		int tempy = 0;
 		int distanceMother = 1;
+		
+		int approximation = (Utils.numGrid/2) - 1;
+		int dirApproximation = 3;
 		do {
-			tempx = this.getPos_x() + Utils.random.nextInt(distanceMother);
-			tempy = this.getPos_y() + Utils.random.nextInt(distanceMother);
-			distanceMother++;
-		} while (son.getAmbiente().path[tempx][tempy]);
+			
+			//GARANTIR QUE NAO FIQUE FORA DO MAPA
+			do {
+				tempx = this.getPos_x() - ((Utils.numGrid/2)-approximation) +Utils.random.nextInt(dirApproximation);
+				tempy = this.getPos_y() - ((Utils.numGrid/2)-approximation) +Utils.random.nextInt(dirApproximation);
+			
+			}while((tempx < 0 || tempx > Utils.numGrid - 1) || (tempy < 0 ||tempy > Utils.numGrid - 1));	
+			approximation--;
+			dirApproximation+=2;
+		}while(this.getAmbiente().path[tempx][tempy]);
 		// ADICIONANDO INDIVIDUO A LISTA:
 		son.setPos_x(tempx);
 		son.setPos_y(tempy);

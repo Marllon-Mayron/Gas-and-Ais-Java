@@ -93,7 +93,7 @@ public class CsvControllers {
 
 			// Escreve o cabeçalho apenas se o arquivo ainda não existir
 			if (!fileExists) {
-				fileWriter.append("Day,MoveRate,VisionRange,Colors\n");
+				fileWriter.append("Day,Population,MoveRate,VisionRange,Colors\n");
 			}
 
 			double moveRateAvarage = 0;
@@ -127,9 +127,11 @@ public class CsvControllers {
 			// Escreve os dados da SpecieAnimalia
 			fileWriter.append(Integer.toString(ambiente.getDays()));
 			fileWriter.append(",");
-			fileWriter.append("" + moveRateAvarage);
+			fileWriter.append(Integer.toString(ambiente.getAnimals().size()));
 			fileWriter.append(",");
-			fileWriter.append("" + visionRangeAvarage);
+			fileWriter.append("" + Utils.truncate(moveRateAvarage, 2));
+			fileWriter.append(",");
+			fileWriter.append("" + Utils.truncate(visionRangeAvarage,2));
 			fileWriter.append(",");
 			fileWriter.append(colorsCounts);
 			fileWriter.append("\n");

@@ -1,5 +1,7 @@
 package simulator.utils;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Random;
 
 public class Utils {
@@ -29,6 +31,14 @@ public class Utils {
 	//CALCULAR DISTANCIA DOS PONTOS
     public static int heuristic(int x1, int y1, int x2, int y2) {
         return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+    }
+    
+    public static double truncate(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = BigDecimal.valueOf(value);
+        bd = bd.setScale(places, RoundingMode.DOWN);
+        return bd.doubleValue();
     }
 	
 }

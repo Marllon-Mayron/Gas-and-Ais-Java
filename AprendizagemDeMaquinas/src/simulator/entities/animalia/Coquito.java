@@ -68,15 +68,20 @@ public class Coquito extends SpecieAnimalia {
 				for (int i = 0; i < this.getAmbiente().getAnimals().size(); i++) {
 					if(this.getAmbiente().getAnimals().get(i).getGender().equals("Female")) {
 						if(this.rangeColiddingAnimal(this, this.getAmbiente().getAnimals().get(i))) {
-							
+							//CALCULAR APROXIMAÇÃO, OS INDIVIDUOS QUE VIREM PRIMEIRO, TENDERÃO A FICAR MAIS PRÓXIMOS
+							int approximation = (this.getAmbiente().getAnimals().get(i).getVision_range()/2) - 1;
+							int dirApproximation = 3;
 							//GARANTIR QUE NÃO QUEIRA IR PRA UM PONTO BLOQUEADO
 							do {
+								
 								//GARANTIR QUE NAO FIQUE FORA DO MAPA
 								do {
-									motherRangeX = this.getAmbiente().getAnimals().get(i).getPos_x() - (this.getAmbiente().getAnimals().get(i).getVision_range()/2) + Utils.random.nextInt(this.getAmbiente().getAnimals().get(i).getVision_range());
-									motherRangeY = this.getAmbiente().getAnimals().get(i).getPos_y() - (this.getAmbiente().getAnimals().get(i).getVision_range()/2) + Utils.random.nextInt(this.getAmbiente().getAnimals().get(i).getVision_range());
+									motherRangeX = this.getAmbiente().getAnimals().get(i).getPos_x() - ((this.getAmbiente().getAnimals().get(i).getVision_range()/2)-approximation) +Utils.random.nextInt(dirApproximation);
+									motherRangeY = this.getAmbiente().getAnimals().get(i).getPos_y() - ((this.getAmbiente().getAnimals().get(i).getVision_range()/2)-approximation) +Utils.random.nextInt(dirApproximation);
 								
-								}while((motherRangeX < 0 || motherRangeX > Utils.numGrid - 1) || (motherRangeY < 0 || motherRangeY > Utils.numGrid - 1));								
+								}while((motherRangeX < 0 || motherRangeX > Utils.numGrid - 1) || (motherRangeY < 0 || motherRangeY > Utils.numGrid - 1));	
+								approximation--;
+								dirApproximation+=2;
 							}while(this.getAmbiente().path[motherRangeX][motherRangeY]);
 							
 							int distance = Utils.heuristic(this.getPos_x(), this.getPos_x(), motherRangeX, motherRangeY);
