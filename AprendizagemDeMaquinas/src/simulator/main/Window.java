@@ -35,7 +35,8 @@ public class Window extends Canvas implements Runnable, KeyListener{
 	private BufferedImage image;
 	private Graphics g;
 
-	public static Ambiente jungle = new Ambiente(4, 30);
+	//MODIFIQUE AS QUANTIDADES DE CRIATURAS E ALIMENTOS AQUI
+	public static Ambiente jungle = new Ambiente(2, 20);
 
 	public Window() throws Exception {
 		try {
@@ -54,7 +55,7 @@ public class Window extends Canvas implements Runnable, KeyListener{
 
 	public void startSimulator() {
 		// GERAR BLOQUEIOS NO MAPA
-		jungle.generateWalls(25);
+		jungle.generateWalls(10);
 		// GERAR ALIMENTAÇÃO NO MAPA
 		jungle.generateFoods();
 		// GERAR CRIATURAS

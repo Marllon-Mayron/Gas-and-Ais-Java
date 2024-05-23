@@ -21,7 +21,7 @@ public class Ambiente {
 	private int frame = 0;
 	public int sec = 0;
 	//VARIAVEL QUE CONTROLA QUANTO TEMPO VALE UM DIA
-	public int secDay = 5;
+	public int secDay = 10;
 	//VARIAVEL QUE VAI CONTROLAR QUANTOS DIAS DE TREINAMENTO
 	public int maxDays = 20;
 	public boolean[][] path = new boolean[Utils.numGrid][Utils.numGrid];
@@ -111,7 +111,10 @@ public class Ambiente {
 			this.generateFoods();
 			
 			//REGISTRAR O NOVO DIA:
-			Utils.csvController.csvCurrentDay(this, this.getAnimals());
+			if(this.getAnimals().size() > 0) {
+				Utils.csvController.csvCurrentDay(this, this.getAnimals());
+			}
+			
 		}
 		
 	

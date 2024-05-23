@@ -38,28 +38,69 @@ public class Coquito extends SpecieAnimalia {
 
 		frame++;
 		if (frame == moveTime) {
-			for (int i = 0; i < this.getAmbiente().getPlants().size(); i++) {
-				// DETECTAR SE VIU ALGUMA COMIDA CASO ESTEJA COM FOME
-				if (rangeColiddingFood(this, this.getAmbiente().getPlants().get(i)) && isHungry()) {
-					// VERIFICA SE JA CHEGOU NO ALIMENTO
-					if (isColiddingFood(this, this.getAmbiente().getPlants().get(i))) {
-						// SE ALIMENTANDO
-						toFeed(this, this.getAmbiente().getPlants(), i);
-						break;
+			//VERIFICAR COMIDAS
+			if(this.isHungry()) {
+				for (int i = 0; i < this.getAmbiente().getPlants().size(); i++) {
+					// DETECTAR SE VIU ALGUMA COMIDA CASO ESTEJA COM FOME
+					if (rangeColiddingFood(this, this.getAmbiente().getPlants().get(i)) && isHungry()) {
+						// VERIFICA SE JA CHEGOU NO ALIMENTO
+						if (isColiddingFood(this, this.getAmbiente().getPlants().get(i))) {
+							// SE ALIMENTANDO
+							toFeed(this, this.getAmbiente().getPlants(), i);
+							break;
+						}
+						// MONTANDO O CAMINHO MAIS PRÁTICO
+						Node targetNode = new Node(this.getAmbiente().getPlants().get(i).getPos_x(),
+								this.getAmbiente().getPlants().get(i).getPos_y(), null, 0, 0);
+						findPath(targetNode);
+						moveTarget = true;
 					}
-					// MONTANDO O CAMINHO MAIS PRÁTICO
-					Node targetNode = new Node(this.getAmbiente().getPlants().get(i).getPos_x(),
-							this.getAmbiente().getPlants().get(i).getPos_y(), null, 0, 0);
+
+				}
+			}else if(this.getGender().equals("Male")){
+				//VERIFICAR PARCEIRAS
+				int minDistance = (Utils.numGrid * Utils.numGrid) + 1;
+				SpecieAnimalia motherTarget = null;
+				
+				int motherRangeX = 0;
+				int motherRangeY = 0;
+				
+				for (int i = 0; i < this.getAmbiente().getAnimals().size(); i++) {
+					if(this.getAmbiente().getAnimals().get(i).getGender().equals("Female")) {
+						if(this.rangeColiddingAnimal(this, this.getAmbiente().getAnimals().get(i))) {
+							
+							//GARANTIR QUE NÃO QUEIRA IR PRA UM PONTO BLOQUEADO
+							do {
+								//GARANTIR QUE NAO FIQUE FORA DO MAPA
+								do {
+									motherRangeX = this.getAmbiente().getAnimals().get(i).getPos_x() - (this.getAmbiente().getAnimals().get(i).getVision_range()/2) + Utils.random.nextInt(this.getAmbiente().getAnimals().get(i).getVision_range());
+									motherRangeY = this.getAmbiente().getAnimals().get(i).getPos_y() - (this.getAmbiente().getAnimals().get(i).getVision_range()/2) + Utils.random.nextInt(this.getAmbiente().getAnimals().get(i).getVision_range());
+								
+								}while((motherRangeX < 0 || motherRangeX > Utils.numGrid - 1) || (motherRangeY < 0 || motherRangeY > Utils.numGrid - 1));								
+							}while(this.getAmbiente().path[motherRangeX][motherRangeY]);
+							
+							int distance = Utils.heuristic(this.getPos_x(), this.getPos_x(), motherRangeX, motherRangeY);
+							if(minDistance > distance) {
+								motherTarget = this.getAmbiente().getAnimals().get(i);
+							}
+						}
+					}
+				}
+				
+				if(!(motherTarget == null)) {
+					Node targetNode = new Node(motherRangeX,
+							motherRangeY, null, 0, 0);
 					findPath(targetNode);
 					moveTarget = true;
 				}
-
 			}
-
+			
+			
 			// MOVIMENTAR O OBJETO
 			if (moveTarget && !path.isEmpty()) {
 				movimentation();
-			} else {
+			}
+			else {
 				moveRandomly();
 			}
 
@@ -175,6 +216,7 @@ public class Coquito extends SpecieAnimalia {
 		}
 		if (path.isEmpty()) {
 			moveTarget = false;
+			path.clear();
 		}
 	}
 
@@ -245,7 +287,7 @@ public class Coquito extends SpecieAnimalia {
 		if(this.getGender().equals("Male")) {
 			g.setColor(Color.white);
 		}else{
-			g.setColor(Color.pink);
+			g.setColor(Color.red);
 		}		
 		g.drawString(this.ponto+ "", getPos_x() * (Window.WIDTH / Utils.numGrid) * Window.SCALE, ((getPos_y() * Window.HEIGHT / Utils.numGrid)) * Window.SCALE);
 	}
