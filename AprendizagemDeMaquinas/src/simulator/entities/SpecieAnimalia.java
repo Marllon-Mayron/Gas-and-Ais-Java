@@ -79,12 +79,12 @@ public class SpecieAnimalia {
 		// DEFINIR DNA DE CRIATURAS QUE NÃO SÃO FILHAS
 		if (dna == "" || dna == null) {
 			// DEFININDO A VISÃO DO MEU ANIMAL
-			this.vision_range = min_vision + 2 * Utils.random.nextInt(15);
+			this.vision_range = min_vision + 2 * Utils.random.nextInt(5);
 			// DEFININDO UMA COR PARA MEU ANIMAL
 			this.colorNum = Utils.random.nextInt(6);
 			this.color = getColorList(colorNum);
 			// DEFINIR QUANTIDADES DE MOVIMENTOS POR SEGUNDO
-			this.move_rate = 20 + Utils.random.nextInt(10);
+			this.move_rate = 10 + Utils.random.nextInt(20);
 			// CRIAR O DNA COM AS CARACTERISTICAS ACIMA
 			this.dna = createDNA();
 		}
@@ -235,7 +235,7 @@ public class SpecieAnimalia {
 		son.setPos_y(tempy);
 
 		// PASSAR OS DADOS DO FILHO GENERICO, PRA A ESPECIE FILHO CORRETA
-		if (mother.getSpecie_name() == "Coquithus Cochais") {
+		if (mother.getSpecie_name() == "Specie1") {
 			Coquito coquito = new Coquito(son.getSpecie_name(), mother.getEating_pratices(), "", 0, 0, son.getWidth(),
 					son.getWidth(), son.getAmbiente());
 			coquito.setDna(son.getDna());

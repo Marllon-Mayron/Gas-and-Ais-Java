@@ -133,7 +133,7 @@ public class CsvControllers {
 			fileWriter.append(",");
 			fileWriter.append("" + Utils.truncate(visionRangeAvarage,2));
 			fileWriter.append(",");
-			fileWriter.append(colorsCounts);
+			fileWriter.append(colorsCounts.deleteCharAt(colorsCounts.length() - 1));
 			fileWriter.append("\n");
 
 		} catch (IOException e) {

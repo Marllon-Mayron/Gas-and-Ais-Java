@@ -21,11 +21,11 @@ public class Ambiente {
 	private int frame = 0;
 	public int sec = 0;
 	//VARIAVEL QUE CONTROLA QUANTO TEMPO VALE UM DIA
-	public int secDay = 3;
+	public int secDay = 5;
 	//VARIAVEL QUE VAI CONTROLAR QUANTOS DIAS DE TREINAMENTO
-	public int maxDays = 100;
+	public int maxDays = 60;
 	public boolean[][] path = new boolean[Utils.numGrid][Utils.numGrid];
-	
+	public int yesterdayNumAnimals = 0;
 	private List<SpecieAnimalia> animals = new ArrayList<>();
 	private List<SpeciePlantae> plants = new ArrayList<>();
 	
@@ -50,6 +50,7 @@ public class Ambiente {
 	}
 	//METODO QUE CONTROLA O QUE ACONTECE QUANDO PASSA DE DIA
 	public void nextDay() {
+		this.yesterdayNumAnimals = animals.size();
 		this.setDays(this.getDays()+1);
 		for(int i = 0; i < animals.size(); i++) {
 			//MATAR OS INDIVIDUOS QUE NÃO SE ALIMENTARAM

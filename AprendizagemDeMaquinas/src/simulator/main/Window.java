@@ -36,7 +36,7 @@ public class Window extends Canvas implements Runnable, KeyListener{
 	private Graphics g;
 
 	//MODIFIQUE AS QUANTIDADES DE CRIATURAS E ALIMENTOS AQUI
-	public static Ambiente jungle = new Ambiente(30, 30);
+	public static Ambiente jungle = new Ambiente(100, 30);
 
 	public Window() throws Exception {
 		try {
@@ -67,7 +67,7 @@ public class Window extends Canvas implements Runnable, KeyListener{
 				tempy = Utils.random.nextInt(Utils.numGrid);
 			} while (jungle.path[tempx][tempy]);
 
-			Coquito coquito = new Coquito("Coquithus Cochais", EatingPractices.HERBIVORE, "", tempx, tempy,
+			Coquito coquito = new Coquito("Specie1", EatingPractices.HERBIVORE, "", tempx, tempy,
 					(WIDTH / (Utils.numGrid * 2)), (HEIGHT / (Utils.numGrid * 2)), jungle);
 			jungle.getAnimals().add(coquito);
 			jungle.path[tempx][tempy] = true;
@@ -166,9 +166,11 @@ public class Window extends Canvas implements Runnable, KeyListener{
 			SpecieAnimalia sa = jungle.getAnimals().get(i);
 			sa.renderSmall(g);
 		}
-		g.setColor(Color.red);
+		g.setColor(Color.white);
 		g.drawString("Dias: " + jungle.getDays() + " (Proximo dia: " + (jungle.secDay - jungle.sec) + ")", 2, 12);
-		g.drawString("Individuos: " + jungle.getAnimals().size(), 2, 28);
+		g.drawString("Individuos Dia Anterior: " + jungle.yesterdayNumAnimals, 2, 28);
+
+		g.drawString("Individuos: " + jungle.getAnimals().size(), 2, 44);
 
 		
 		
