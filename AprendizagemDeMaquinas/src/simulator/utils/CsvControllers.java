@@ -53,7 +53,7 @@ public class CsvControllers {
 			fileWriter.append(",");
 			fileWriter.append(Integer.toString(sa.getVision_range()));
 			fileWriter.append(",");
-			fileWriter.append(Integer.toString(sa.ponto));
+			fileWriter.append(Integer.toString(sa.getDaysSurvived()));
 			fileWriter.append("\n");
 
 		} catch (IOException e) {

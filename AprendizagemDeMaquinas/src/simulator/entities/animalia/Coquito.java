@@ -19,11 +19,10 @@ import simulator.utils.Utils;
 public class Coquito extends SpecieAnimalia {
 
 	public Coquito(String specie_name, EatingPractices eating_pratices, String dna, int pos_x, int pos_y, double width,
-			double heigt, Ambiente jungle) {
-		super(specie_name, eating_pratices, dna, pos_x, pos_y, width, heigt, jungle);
+			double heigt, Ambiente ambiente, int lifespan) {
+		super(specie_name, eating_pratices, dna, pos_x, pos_y, width, heigt, ambiente, lifespan);
 		// TODO Auto-generated constructor stub
 	}
-
 	// TEMPO DE CADA PASSO
 	private int moveTime = 60 / this.getMove_rate();
 	public int frame;
@@ -280,12 +279,12 @@ public class Coquito extends SpecieAnimalia {
 		}
 		g.setColor(getColor());
 		if (Utils.showRangeVision) {
-			g.drawRect((getPos_x() - this.getVision_range() / 2) * (Window.WIDTH / Utils.numGrid),
-					(getPos_y() - this.getVision_range() / 2) * (Window.HEIGHT / Utils.numGrid),
-					this.getVision_range() * Window.WIDTH / Utils.numGrid,
-					this.getVision_range() * Window.HEIGHT / Utils.numGrid);
+			g.drawRect((getPos_x() - this.getVision_range() / 2) * (Window.windowSimulatorWidth / Utils.numGrid),
+					(getPos_y() - this.getVision_range() / 2) * (Window.windowSimulatorHeight / Utils.numGrid),
+					this.getVision_range() * Window.windowSimulatorWidth / Utils.numGrid,
+					this.getVision_range() * Window.windowSimulatorHeight / Utils.numGrid);
 		}
-		g.fillRect((getPos_x() * Window.WIDTH / Utils.numGrid), (getPos_y() * Window.HEIGHT / Utils.numGrid),
+		g.fillRect((getPos_x() * Window.windowSimulatorWidth / Utils.numGrid), (getPos_y() * Window.windowSimulatorHeight / Utils.numGrid),
 				(int) getWidth(), (int) getHeight());
 	}
 	public void renderSmall(Graphics g) {
@@ -294,7 +293,7 @@ public class Coquito extends SpecieAnimalia {
 		}else{
 			g.setColor(Color.red);
 		}		
-		g.drawString(this.ponto+ "", getPos_x() * (Window.WIDTH / Utils.numGrid) * Window.SCALE, ((getPos_y() * Window.HEIGHT / Utils.numGrid)) * Window.SCALE);
+		g.drawString(this.getDaysSurvived()+ "", getPos_x() * (Window.windowSimulatorWidth / Utils.numGrid) * Window.SCALE, ((getPos_y() * Window.windowSimulatorHeight / Utils.numGrid)) * Window.SCALE);
 	}
 
 }

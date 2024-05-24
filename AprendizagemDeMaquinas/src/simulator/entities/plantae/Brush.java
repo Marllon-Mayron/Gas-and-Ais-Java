@@ -20,7 +20,7 @@ public class Brush extends SpeciePlantae{
 	public void render(Graphics g) {
 		
 		g.setColor(Color.green);
-		g.fillRect((getPos_x() * Window.WIDTH / Utils.numGrid), (getPos_y() * Window.HEIGHT / Utils.numGrid), (int)getWidth()/2,(int)getHeight()/2);
+		g.fillRect((getPos_x() * Window.windowSimulatorWidth / Utils.numGrid), (getPos_y() * Window.windowSimulatorHeight / Utils.numGrid), (int)getWidth()/2,(int)getHeight()/2);
 	}
 
 }

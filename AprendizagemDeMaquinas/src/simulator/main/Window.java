@@ -4,6 +4,8 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
@@ -16,41 +18,40 @@ import simulator.ambiente.Ambiente;
 import simulator.entities.SpecieAnimalia;
 import simulator.entities.SpeciePlantae;
 import simulator.entities.animalia.Coquito;
-import simulator.entities.plantae.Brush;
 import simulator.enums.EatingPractices;
-import simulator.utils.CsvControllers;
+import simulator.graphics.Charts;
 import simulator.utils.Utils;
 
-public class Window extends Canvas implements Runnable, KeyListener{
+public class Window extends Canvas implements Runnable, KeyListener {
 
 	private static final long serialVersionUID = 1L;
 	public static JFrame frame;
 	private Thread thread;
 	private boolean isRunning = true;
 	//NÃO MEXER NO TAMANHO DA TELA
-	public static final int WIDTH = 240;
-	public static final int HEIGHT = 240;
+	public static final int windowSimulatorWidth = 240;
+	public static final int windowSimulatorHeight = 240;
 	public static final int SCALE = 3;
 	public int x, y;
 	private BufferedImage image;
 	private Graphics g;
+	public Charts charts = new Charts();
 
 	//MODIFIQUE AS QUANTIDADES DE CRIATURAS E ALIMENTOS AQUI
 	public static Ambiente jungle = new Ambiente(100, 30);
 
 	public Window() throws Exception {
 		try {
-            Utils.csvController.deleteAllFiles(Utils.csvController.resDir);
-            System.out.println("Todos os arquivos foram apagados com sucesso.");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+			Utils.csvController.deleteAllFiles(Utils.csvController.resDir);
+			System.out.println("Todos os arquivos foram apagados com sucesso.");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		addKeyListener(this);
-		setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
+		setPreferredSize(new Dimension(windowSimulatorWidth * SCALE, windowSimulatorHeight * SCALE));
 		initFrame();
-		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+		image = new BufferedImage(windowSimulatorWidth, windowSimulatorHeight, BufferedImage.TYPE_INT_RGB);
 		startSimulator();
-
 	}
 
 	public void startSimulator() {
@@ -68,7 +69,7 @@ public class Window extends Canvas implements Runnable, KeyListener{
 			} while (jungle.path[tempx][tempy]);
 
 			Coquito coquito = new Coquito("Specie1", EatingPractices.HERBIVORE, "", tempx, tempy,
-					(WIDTH / (Utils.numGrid * 2)), (HEIGHT / (Utils.numGrid * 2)), jungle);
+					(windowSimulatorWidth / (Utils.numGrid * 2)), (windowSimulatorHeight / (Utils.numGrid * 2)), jungle, 15);
 			jungle.getAnimals().add(coquito);
 			jungle.path[tempx][tempy] = true;
 
@@ -82,9 +83,15 @@ public class Window extends Canvas implements Runnable, KeyListener{
 		frame = new JFrame("IA TRAINING");
 		frame.add(this);
 		frame.setResizable(false);
+		//frame.setUndecorated(true); // Remover bordas e barra de título
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		// Colocar em tela cheia
+		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+		gd.setFullScreenWindow(frame);
+		
 		frame.setVisible(true);
 	}
 
@@ -128,7 +135,7 @@ public class Window extends Canvas implements Runnable, KeyListener{
 
 		g = image.getGraphics();
 		g.setColor(new Color(0, 0, 0));
-		g.fillRect(0, 0, WIDTH * SCALE, HEIGHT * SCALE);
+		g.fillRect(0, 0, windowSimulatorWidth * SCALE, windowSimulatorHeight * SCALE);
 
 		for (int i = 0; i < Utils.numGrid; i++) {
 			for (int j = 0; j < Utils.numGrid; j++) {
@@ -138,8 +145,8 @@ public class Window extends Canvas implements Runnable, KeyListener{
 					g.setColor(Color.DARK_GRAY);
 				}
 
-				g.fillRect((WIDTH / Utils.numGrid) * i, (HEIGHT / Utils.numGrid) * j, (WIDTH / (Utils.numGrid + 1)),
-						(HEIGHT / (Utils.numGrid + 1)));
+				g.fillRect((windowSimulatorWidth / Utils.numGrid) * i, (windowSimulatorHeight / Utils.numGrid) * j, (windowSimulatorWidth / (Utils.numGrid + 1)),
+						(windowSimulatorHeight / (Utils.numGrid + 1)));
 			}
 
 		}
@@ -158,7 +165,7 @@ public class Window extends Canvas implements Runnable, KeyListener{
 		g.dispose();// LIMPAR DADOS DE IMAGENS NÃO USADOS || A PARTIR DAQUI OS GRAFICOS NÃO TERÃO O ZOOM DA SCALA
 		g = bs.getDrawGraphics();
 
-		g.drawImage(image, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
+		g.drawImage(image, 0, 0, windowSimulatorWidth * SCALE, windowSimulatorHeight * SCALE, null);
 
 		// USER INTERFACE DA SIMULAÇÃO
 		// ====================================
@@ -171,9 +178,8 @@ public class Window extends Canvas implements Runnable, KeyListener{
 		g.drawString("Individuos Dia Anterior: " + jungle.yesterdayNumAnimals, 2, 28);
 
 		g.drawString("Individuos: " + jungle.getAnimals().size(), 2, 44);
-
 		
-		
+		charts.render(g);
 		// ====================================
 
 		bs.show();
@@ -213,26 +219,25 @@ public class Window extends Canvas implements Runnable, KeyListener{
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
 		if (e.getKeyCode() == KeyEvent.VK_R) {
-			if(Utils.showRangeVision) {
+			if (Utils.showRangeVision) {
 				Utils.showRangeVision = false;
-			}else {
+			} else {
 				Utils.showRangeVision = true;
 			}
-			
+
 		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
-		
-	}
 
+	}
 }

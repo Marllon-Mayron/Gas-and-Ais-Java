@@ -23,7 +23,7 @@ public class Ambiente {
 	//VARIAVEL QUE CONTROLA QUANTO TEMPO VALE UM DIA
 	public int secDay = 5;
 	//VARIAVEL QUE VAI CONTROLAR QUANTOS DIAS DE TREINAMENTO
-	public int maxDays = 60;
+	public int maxDays = 100;
 	public boolean[][] path = new boolean[Utils.numGrid][Utils.numGrid];
 	public int yesterdayNumAnimals = 0;
 	private List<SpecieAnimalia> animals = new ArrayList<>();
@@ -53,17 +53,25 @@ public class Ambiente {
 		this.yesterdayNumAnimals = animals.size();
 		this.setDays(this.getDays()+1);
 		for(int i = 0; i < animals.size(); i++) {
-			//MATAR OS INDIVIDUOS QUE NÃO SE ALIMENTARAM
-			if(animals.get(i).isHungry()) {
+			
+			if(animals.get(i).getDaysSurvived() > animals.get(i).getLifespan()) {
 				Utils.csvController.csvCreaturePerformance(animals.get(i));
 				animals.get(i).death();
 				animals.remove(i);
 				i--;
-			}else {				
-				//RESETAR A FOME DO INDIVIDUO
-				animals.get(i).setHungry(true);
+			}else{
+				//MATAR OS INDIVIDUOS QUE NÃO SE ALIMENTARAM
+				if(animals.get(i).isHungry()) {
+					Utils.csvController.csvCreaturePerformance(animals.get(i));
+					animals.get(i).death();
+					animals.remove(i);
+					i--;
+				}else {				
+					//RESETAR A FOME DO INDIVIDUO
+					animals.get(i).setDaysSurvived(animals.get(i).getDaysSurvived() + 1);
+					animals.get(i).setHungry(true);
+				}
 			}
-			
 		}
 		//VERIFICAR SE CHEGOU NO ULTIMO DIA, PARA GERAR A PERFORMANCE DOS QUE FICARAM VIVOS
 		if(this.getDays() == this.maxDays) {
@@ -78,6 +86,7 @@ public class Ambiente {
 					//DEFININDO A DISTANCIA INICIALMENTE COMO UM VALOR ACIMA DO PERMITIDO, POIS NÃO TEM COMO NASCER INDIVIDUO FORA DO MAPA
 					SpecieAnimalia mother = animals.get(i);
 					int minDistance = (Utils.numGrid * Utils.numGrid) + 1;
+					int maxSpeed = 0;
 					SpecieAnimalia tempFather = null;
 					//A FEMEA IRA SE REPRODUZIR COM O MACHO MAIS PRÓXIMO
 					for(int j = 0 ; j < currentListSize; j++) {				
@@ -87,12 +96,21 @@ public class Ambiente {
 							if(animals.get(j).getGender().equals("Male")) {
 								SpecieAnimalia father = animals.get(j);
 								int distance = Utils.heuristic(mother.getPos_x(), mother.getPos_y(),animals.get(j).getPos_x(), father.getPos_y());
+								int speed = father.getMove_rate();
 								//SÓ SERÃO CONSIDERADOS PRETENDENTES NO RAIO DE VISÃO DA FEMEA
 								if(mother.rangeColiddingAnimal(mother, father)) {
 									//PAI SERÁ O MAIS PRÓXIMO
-									if(minDistance > distance) {
-										minDistance = distance;
+									
+									//AQUI É ONDE É FEITO O FITNESS
+									
+									if(speed > maxSpeed) {
+										maxSpeed = speed;
 										tempFather = father;
+									}else if(speed == maxSpeed){
+										if(minDistance > distance) {
+											minDistance = distance;		
+											tempFather = father;
+										}
 									}
 								}							
 							}
@@ -128,7 +146,7 @@ public class Ambiente {
 				tempx = Utils.random.nextInt(Utils.numGrid);
 				tempy = Utils.random.nextInt(Utils.numGrid);
 			} while ( this.path[tempx][tempy]);
-			Brush brush = new Brush(tempx, tempy, (Window.WIDTH / (Utils.numGrid + 1)), (Window.HEIGHT / (Utils.numGrid + 1)), 0, 1,
+			Brush brush = new Brush(tempx, tempy, (Window.windowSimulatorWidth / (Utils.numGrid + 1)), (Window.windowSimulatorHeight / (Utils.numGrid + 1)), 0, 1,
 					3);
 			this.getPlants().add(brush);
 			// jungle.path[tempx][tempy] = true;

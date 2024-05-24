@@ -49,14 +49,17 @@ public class SpecieAnimalia {
 
 	private int min_vision = 3;
 
-	public int ponto;
+	private int lifespan;
+	
+	private int daysSurvived;
 
 	private Ambiente ambiente;
 
+	
 	private int mutationPercent = 10;
 
 	public SpecieAnimalia(String specie_name, EatingPractices eating_pratices, String dna, int pos_x, int pos_y,
-			double width, double heigt, Ambiente ambiente) {
+			double width, double heigt, Ambiente ambiente, int lifespan) {
 		super();
 		this.specie_name = specie_name;
 		this.eating_pratices = eating_pratices;
@@ -66,6 +69,7 @@ public class SpecieAnimalia {
 		this.width = width;
 		this.height = heigt;
 		this.ambiente = ambiente;
+		this.lifespan = lifespan;
 
 		this.setHungry(true);
 
@@ -196,7 +200,7 @@ public class SpecieAnimalia {
 		String alelos[] = dna.split("-");
 
 		SpecieAnimalia son = new SpecieAnimalia(mother.getSpecie_name(), mother.getEating_pratices(), mother.getDna(),
-				0, 0, mother.getWidth(), mother.getWidth(), mother.getAmbiente());
+				0, 0, mother.getWidth(), mother.getWidth(), mother.getAmbiente(), mother.getLifespan());
 		// CHECAR QUAL ESPECIE PELO NOME CIENTIFICO:
 
 		for (int i = 0; i < alelos.length; i++) {
@@ -237,7 +241,7 @@ public class SpecieAnimalia {
 		// PASSAR OS DADOS DO FILHO GENERICO, PRA A ESPECIE FILHO CORRETA
 		if (mother.getSpecie_name() == "Specie1") {
 			Coquito coquito = new Coquito(son.getSpecie_name(), mother.getEating_pratices(), "", 0, 0, son.getWidth(),
-					son.getWidth(), son.getAmbiente());
+					son.getWidth(), son.getAmbiente(), son.getLifespan());
 			coquito.setDna(son.getDna());
 			coquito.setColor(son.getColor());
 			coquito.setWidth(son.getWidth());
@@ -278,22 +282,22 @@ public class SpecieAnimalia {
 	}
 
 	public boolean rangeColiddingFood(SpecieAnimalia e1, SpeciePlantae e2) {
-		Rectangle e1Mask = new Rectangle((e1.getPos_x() - e1.getVision_range() / 2) * (Window.WIDTH / Utils.numGrid),
-				(e1.getPos_y() - e1.getVision_range() / 2) * (Window.HEIGHT / Utils.numGrid),
-				e1.getVision_range() * Window.WIDTH / Utils.numGrid,
-				e1.getVision_range() * Window.HEIGHT / Utils.numGrid);
-		Rectangle e2Mask = new Rectangle((int) e2.getPos_x() * (Window.WIDTH / Utils.numGrid),
-				(int) e2.getPos_y() * (Window.HEIGHT / Utils.numGrid), (int) e2.getWidth(), (int) e2.getHeight());
+		Rectangle e1Mask = new Rectangle((e1.getPos_x() - e1.getVision_range() / 2) * (Window.windowSimulatorWidth / Utils.numGrid),
+				(e1.getPos_y() - e1.getVision_range() / 2) * (Window.windowSimulatorHeight / Utils.numGrid),
+				e1.getVision_range() * Window.windowSimulatorWidth / Utils.numGrid,
+				e1.getVision_range() * Window.windowSimulatorHeight / Utils.numGrid);
+		Rectangle e2Mask = new Rectangle((int) e2.getPos_x() * (Window.windowSimulatorWidth / Utils.numGrid),
+				(int) e2.getPos_y() * (Window.windowSimulatorHeight / Utils.numGrid), (int) e2.getWidth(), (int) e2.getHeight());
 
 		return e1Mask.intersects(e2Mask);
 	}
 	public boolean rangeColiddingAnimal(SpecieAnimalia e1, SpecieAnimalia e2) {
-		Rectangle e1Mask = new Rectangle((e1.getPos_x() - e1.getVision_range() / 2) * (Window.WIDTH / Utils.numGrid),
-				(e1.getPos_y() - e1.getVision_range() / 2) * (Window.HEIGHT / Utils.numGrid),
-				e1.getVision_range() * Window.WIDTH / Utils.numGrid,
-				e1.getVision_range() * Window.HEIGHT / Utils.numGrid);
-		Rectangle e2Mask = new Rectangle((int) e2.getPos_x() * (Window.WIDTH / Utils.numGrid),
-				(int) e2.getPos_y() * (Window.HEIGHT / Utils.numGrid), (int) e2.getWidth(), (int) e2.getHeight());
+		Rectangle e1Mask = new Rectangle((e1.getPos_x() - e1.getVision_range() / 2) * (Window.windowSimulatorWidth / Utils.numGrid),
+				(e1.getPos_y() - e1.getVision_range() / 2) * (Window.windowSimulatorHeight / Utils.numGrid),
+				e1.getVision_range() * Window.windowSimulatorWidth / Utils.numGrid,
+				e1.getVision_range() * Window.windowSimulatorHeight / Utils.numGrid);
+		Rectangle e2Mask = new Rectangle((int) e2.getPos_x() * (Window.windowSimulatorWidth / Utils.numGrid),
+				(int) e2.getPos_y() * (Window.windowSimulatorHeight / Utils.numGrid), (int) e2.getWidth(), (int) e2.getHeight());
 
 		return e1Mask.intersects(e2Mask);
 	}
@@ -307,7 +311,6 @@ public class SpecieAnimalia {
 
 	public static void toFeed(SpecieAnimalia sa, List<?> list, int index) {
 		list.remove(list.get(index));
-		sa.ponto++;
 		sa.setHungry(false);
 	}
 
@@ -433,6 +436,23 @@ public class SpecieAnimalia {
 
 	public void setAmbiente(Ambiente ambiente) {
 		this.ambiente = ambiente;
+	}
+	
+
+	public int getDaysSurvived() {
+		return daysSurvived;
+	}
+
+	public void setDaysSurvived(int daysSurvived) {
+		this.daysSurvived = daysSurvived;
+	}
+
+	public int getLifespan() {
+		return lifespan;
+	}
+
+	public void setLifespan(int lifespan) {
+		this.lifespan = lifespan;
 	}
 
 	@Override
