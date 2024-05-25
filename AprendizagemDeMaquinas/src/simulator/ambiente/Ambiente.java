@@ -15,15 +15,15 @@ import simulator.utils.Utils;
 //CLASSE RESPONSAVEL POR GERENCIAR O AMBIENTE ONDE OS INDIVIDUOS ESTÃO SENDO POSICIONADOS
 public class Ambiente {
 	
-	private int days;
+	private int days = 1;
 	private int populationInitial;
 	private int numPlants;
 	private int frame = 0;
 	public int sec = 0;
 	//VARIAVEL QUE CONTROLA QUANTO TEMPO VALE UM DIA
-	public int secDay = 5;
+	public int secDay = 1;
 	//VARIAVEL QUE VAI CONTROLAR QUANTOS DIAS DE TREINAMENTO
-	public int maxDays = 100;
+	public int maxDays = 120;
 	public boolean[][] path = new boolean[Utils.numGrid][Utils.numGrid];
 	public int yesterdayNumAnimals = 0;
 	private List<SpecieAnimalia> animals = new ArrayList<>();
@@ -40,7 +40,7 @@ public class Ambiente {
 		frame++;
 		if(frame == 60) {
 			sec++;
-			if(sec >= secDay && days <= maxDays) {
+			if(sec >= secDay && this.getDays() < maxDays) {
 				nextDay();
 				sec = 0;
 			}
@@ -78,6 +78,8 @@ public class Ambiente {
 			for(int i = 0; i < animals.size(); i++) {
 				Utils.csvController.csvCreaturePerformance(animals.get(i));
 			}
+			Utils.csvController.csvCurrentDay(this, this.getAnimals());
+			
 		}else {
 			int currentListSize = animals.size();
 			for(int i = 0; i < currentListSize; i++) {
@@ -135,7 +137,8 @@ public class Ambiente {
 			}
 			
 		}
-		
+		//ATUALIZAR GRÁFICO
+        Window.colorChart.updateChart();
 	
 	}
 	public void generateFoods() {
