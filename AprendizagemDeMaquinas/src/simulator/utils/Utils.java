@@ -12,7 +12,7 @@ public class Utils {
 	//MOSTRAR RANGE DE VISÃO DOS INDIVIDUOS
 	public static boolean showRangeVision = false;
 	//TAMANHO DO MAPA
-	public static int numGrid = 20;
+	public static int numGrid = 40;
 	//CONTROLE DE CSV
 	public static CsvControllers csvController = new CsvControllers();
 	

@@ -81,7 +81,7 @@ public class Window extends Canvas implements Runnable, KeyListener {
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.add(this, BorderLayout.CENTER);
 
-        colorChart = new ColorChart("Distrubuição Genética", "CurrentDays-Specie1.csv", 30, 40);
+        colorChart = new ColorChart("Distrubuição Genética", "CurrentDays-Specie1.csv", 20, 40);
         mainPanel.add(colorChart.getContentPane(), BorderLayout.EAST);
 
         frame.add(mainPanel);

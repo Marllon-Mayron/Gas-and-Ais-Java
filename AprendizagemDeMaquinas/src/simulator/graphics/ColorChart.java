@@ -1,11 +1,13 @@
 package simulator.graphics;
 
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -16,6 +18,7 @@ import javax.swing.JFrame;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
@@ -27,12 +30,14 @@ public class ColorChart extends JFrame {
     private DefaultCategoryDataset dataset;
     private String filePath;
     private JFreeChart chart;
+    private Map<String, Color> colorMap;
 
     public ColorChart(String title, String fileName, int width, int height) {
         String projectDir = System.getProperty("user.dir");
         String resDir = projectDir + File.separator + "res";
         filePath = resDir + File.separator + fileName;
 
+        colorMap = new HashMap<>();
         dataset = createDataset(filePath);
 
         chart = ChartFactory.createLineChart(
@@ -41,7 +46,7 @@ public class ColorChart extends JFrame {
                 "Quantidade Total de Cores",
                 dataset,
                 PlotOrientation.VERTICAL,
-                true, true, false);
+                false, true, false);
 
         ChartPanel chartPanel = new ChartPanel(chart);
 
@@ -49,19 +54,30 @@ public class ColorChart extends JFrame {
         int totalHeight = Window.frame.getHeight();
         int xPosition = (int) (totalWidth * (width / 100.0)); 
         int yPosition = (int) (totalHeight * (height / 100.0));
-        chartPanel.setPreferredSize(new Dimension(800, 600));
+        chartPanel.setPreferredSize(new Dimension(600, 600));
 
         CategoryPlot plot = (CategoryPlot) chart.getPlot();
-        LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
+        LineAndShapeRenderer renderer = new LineAndShapeRenderer();
+        renderer.setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator("{2}", NumberFormat.getIntegerInstance()));
+        //LEGENDA NAS LINHAS
+        renderer.setDefaultItemLabelsVisible(false);
+
         for (int i = 0; i < dataset.getRowCount(); i++) {
-            renderer.setSeriesStroke(i, new BasicStroke(1.0f));
+            String seriesKey = (String) dataset.getRowKey(i);
+            Color color = colorMap.get(seriesKey);
+            if (color != null) {
+                renderer.setSeriesPaint(i, color);
+                renderer.setSeriesStroke(i, new BasicStroke(1.0f));
+            }
         }
+        plot.setRenderer(renderer);
 
         setContentPane(chartPanel);
     }
 
     public void updateChart() {
         dataset.clear();
+        colorMap.clear();
         DefaultCategoryDataset newDataset = createDataset(filePath);
 
         for (int row = 0; row < newDataset.getRowCount(); row++) {
@@ -72,6 +88,15 @@ public class ColorChart extends JFrame {
 
         CategoryPlot plot = (CategoryPlot) chart.getPlot();
         plot.setDataset(dataset);
+
+        LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
+        for (int i = 0; i < dataset.getRowCount(); i++) {
+            String seriesKey = (String) dataset.getRowKey(i);
+            Color color = colorMap.get(seriesKey);
+            if (color != null) {
+                renderer.setSeriesPaint(i, color);
+            }
+        }
     }
 
     private DefaultCategoryDataset createDataset(String csvFilePath) {
@@ -80,10 +105,17 @@ public class ColorChart extends JFrame {
 
         try (BufferedReader br = new BufferedReader(new FileReader(new File(csvFilePath)))) {
             String line;
+            boolean firstLine = true;
             while ((line = br.readLine()) != null) {
+            	if(firstLine) {
+            		firstLine = false;
+            		continue;
+            		
+            	}
                 String[] parts = line.split(",");
 
                 int day;
+                
                 try {
                     day = Integer.parseInt(parts[0]);
                 } catch (NumberFormatException e) {
@@ -110,20 +142,19 @@ public class ColorChart extends JFrame {
 
                     String colorKey = String.format("RGB(%d,%d,%d)", r, g, b);
                     colorSeries.computeIfAbsent(colorKey, k -> new ColorData(r, g, b)).addData(day, count);
+                    colorMap.put(colorKey, new Color(r, g, b));
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        // Ordenar os dias
         Set<Integer> sortedDays = new TreeSet<>();
         for (Map.Entry<String, ColorData> entry : colorSeries.entrySet()) {
             ColorData colorData = entry.getValue();
             sortedDays.addAll(colorData.days);
         }
 
-        // Adiciona os dados ao dataset na ordem correta
         for (Integer day : sortedDays) {
             for (Map.Entry<String, ColorData> entry : colorSeries.entrySet()) {
                 ColorData colorData = entry.getValue();
@@ -136,7 +167,6 @@ public class ColorChart extends JFrame {
 
         return dataset;
     }
-
 }
 
 class ColorData {

@@ -88,7 +88,7 @@ public class SpecieAnimalia {
 			this.colorNum = Utils.random.nextInt(6);
 			this.color = getColorList(colorNum);
 			// DEFINIR QUANTIDADES DE MOVIMENTOS POR SEGUNDO
-			this.move_rate = 50 + Utils.random.nextInt(20);
+			this.move_rate = 10 + Utils.random.nextInt(20);
 			// CRIAR O DNA COM AS CARACTERISTICAS ACIMA
 			this.dna = createDNA();
 		}
