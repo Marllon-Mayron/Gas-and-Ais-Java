@@ -25,6 +25,7 @@ import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 import simulator.main.Window;
+import simulator.utils.Utils;
 
 public class ColorChart extends JFrame {
     private DefaultCategoryDataset dataset;
@@ -107,6 +108,7 @@ public class ColorChart extends JFrame {
             String line;
             boolean firstLine = true;
             while ((line = br.readLine()) != null) {
+            	//PULANDO O CABECALHO
             	if(firstLine) {
             		firstLine = false;
             		continue;
@@ -122,28 +124,39 @@ public class ColorChart extends JFrame {
                     System.err.println("Dia inválido (não é um número): " + parts[0]);
                     continue;
                 }
-
-                String colors = parts[4];
-
-                String[] colorEntries = colors.split("\\|");
-                for (String colorEntry : colorEntries) {
-                    String[] colorParts = colorEntry.split("-");
-
-                    int count, r, g, b;
-                    try {
-                        count = Integer.parseInt(colorParts[0]);
-                        r = Integer.parseInt(colorParts[1]);
-                        g = Integer.parseInt(colorParts[2]);
-                        b = Integer.parseInt(colorParts[3]);
-                    } catch (NumberFormatException e) {
-                        System.err.println("Valor inválido na cor (não é um número): " + colorEntry);
-                        continue;
-                    }
-
-                    String colorKey = String.format("RGB(%d,%d,%d)", r, g, b);
-                    colorSeries.computeIfAbsent(colorKey, k -> new ColorData(r, g, b)).addData(day, count);
-                    colorMap.put(colorKey, new Color(r, g, b));
+                
+                
+                //TRATAMENTO DAS CORES
+                String colors = "";
+                
+                //SEMPRE ENCONTRAR A COLUNA DE CORES PELO PADRÃO X-X-X-X (quantidade-r-g-b)
+                for(String column : parts) {
+                	if(Utils.verificarPadrao("\\d-\\d-\\d-\\d", column)) {
+                		colors = column; 
+                	}
                 }
+                if(colors != "") {
+                	String[] colorEntries = colors.split("\\|");
+                    for (String colorEntry : colorEntries) {
+                        String[] colorParts = colorEntry.split("-");
+
+                        int count, r, g, b;
+                        try {
+                            count = Integer.parseInt(colorParts[0]);
+                            r = Integer.parseInt(colorParts[1]);
+                            g = Integer.parseInt(colorParts[2]);
+                            b = Integer.parseInt(colorParts[3]);
+                        } catch (NumberFormatException e) {
+                            System.err.println("Valor inválido na cor (não é um número): " + colorEntry);
+                            continue;
+                        }
+
+                        String colorKey = String.format("RGB(%d,%d,%d)", r, g, b);
+                        colorSeries.computeIfAbsent(colorKey, k -> new ColorData(r, g, b)).addData(day, count);
+                        colorMap.put(colorKey, new Color(r, g, b));
+                    }
+                }
+                
             }
         } catch (IOException e) {
             e.printStackTrace();

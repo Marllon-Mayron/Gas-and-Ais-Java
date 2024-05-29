@@ -3,6 +3,8 @@ package simulator.utils;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Utils {
 	//ESTÁ CLASSE VAI CARREGAR METODOS QUE VÃO SER USADOS EM TODOS OS CANTOS DO CÓDIGO, E ALGUMAS CONFIGURAÇÕES
@@ -39,6 +41,13 @@ public class Utils {
         BigDecimal bd = BigDecimal.valueOf(value);
         bd = bd.setScale(places, RoundingMode.DOWN);
         return bd.doubleValue();
+    }
+    
+    public static boolean verificarPadrao(String regex,String string) {
+        String padrao = regex;
+        Pattern pattern = Pattern.compile(padrao);
+        Matcher matcher = pattern.matcher(string);
+        return matcher.find();
     }
 	
 }

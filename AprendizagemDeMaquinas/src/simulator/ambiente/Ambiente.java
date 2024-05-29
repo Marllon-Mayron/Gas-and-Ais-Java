@@ -88,7 +88,7 @@ public class Ambiente {
 					//DEFININDO A DISTANCIA INICIALMENTE COMO UM VALOR ACIMA DO PERMITIDO, POIS NÃO TEM COMO NASCER INDIVIDUO FORA DO MAPA
 					SpecieAnimalia mother = animals.get(i);
 					int minDistance = (Utils.numGrid * Utils.numGrid) + 1;
-					int maxSpeed = 0;
+					int bestFitnes = 0;
 					SpecieAnimalia tempFather = null;
 					//A FEMEA IRA SE REPRODUZIR COM O MACHO MAIS PRÓXIMO
 					for(int j = 0 ; j < currentListSize; j++) {				
@@ -98,17 +98,17 @@ public class Ambiente {
 							if(animals.get(j).getGender().equals("Male")) {
 								SpecieAnimalia father = animals.get(j);
 								int distance = Utils.heuristic(mother.getPos_x(), mother.getPos_y(),animals.get(j).getPos_x(), father.getPos_y());
-								int speed = father.getMove_rate();
+								int fitnes = father.getMove_rate();
 								//SÓ SERÃO CONSIDERADOS PRETENDENTES NO RAIO DE VISÃO DA FEMEA
 								if(mother.rangeColiddingAnimal(mother, father)) {
 									//PAI SERÁ O MAIS PRÓXIMO
 									
 									//AQUI É ONDE É FEITO O FITNESS
 									
-									if(speed > maxSpeed) {
-										maxSpeed = speed;
+									if(fitnes > bestFitnes) {
+										bestFitnes = fitnes;
 										tempFather = father;
-									}else if(speed == maxSpeed){
+									}else if(fitnes == bestFitnes){
 										if(minDistance > distance) {
 											minDistance = distance;		
 											tempFather = father;

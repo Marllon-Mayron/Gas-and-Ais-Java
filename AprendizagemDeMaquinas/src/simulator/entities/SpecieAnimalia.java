@@ -56,7 +56,7 @@ public class SpecieAnimalia {
 	private Ambiente ambiente;
 
 	
-	private int mutationPercent = 10;
+	private int mutationPercent = 15;
 
 	public SpecieAnimalia(String specie_name, EatingPractices eating_pratices, String dna, int pos_x, int pos_y,
 			double width, double heigt, Ambiente ambiente, int lifespan) {
@@ -200,7 +200,7 @@ public class SpecieAnimalia {
 		String alelos[] = dna.split("-");
 
 		SpecieAnimalia son = new SpecieAnimalia(mother.getSpecie_name(), mother.getEating_pratices(), mother.getDna(),
-				0, 0, mother.getWidth(), mother.getWidth(), mother.getAmbiente(), mother.getLifespan());
+				0, 0, mother.getWidth(), mother.getHeight(), mother.getAmbiente(), mother.getLifespan());
 		// CHECAR QUAL ESPECIE PELO NOME CIENTIFICO:
 
 		for (int i = 0; i < alelos.length; i++) {
@@ -209,7 +209,7 @@ public class SpecieAnimalia {
 
 		try {
 			son.setColor(getColorList(Integer.parseInt(alelos[0])));
-			son.setWidth(Double.parseDouble(alelos[1]));
+			son.setHeight(Double.parseDouble(alelos[1]));
 			son.setSpeed(Double.parseDouble(alelos[2]));
 			son.setMove_rate(Integer.parseInt(alelos[3]));
 			son.setVision_range(Integer.parseInt(alelos[4]));
@@ -244,7 +244,7 @@ public class SpecieAnimalia {
 					son.getWidth(), son.getAmbiente(), son.getLifespan());
 			coquito.setDna(son.getDna());
 			coquito.setColor(son.getColor());
-			coquito.setWidth(son.getWidth());
+			coquito.setHeight(son.getHeight());
 			coquito.setSpeed(son.getSpeed());
 			coquito.setMove_rate(son.getMove_rate());
 			coquito.setVision_range(son.getVision_range());

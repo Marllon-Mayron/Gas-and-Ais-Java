@@ -93,11 +93,12 @@ public class CsvControllers {
 
 			// Escreve o cabeçalho apenas se o arquivo ainda não existir
 			if (!fileExists) {
-				fileWriter.append("Day,Population,MoveRate,VisionRange,Colors\n");
+				fileWriter.append("Day,Population,MoveRate,VisionRange,Height,Colors\n");
 			}
 
 			double moveRateAvarage = 0;
 			double visionRangeAvarage = 0;
+			double heightAvarage = 0;
 			StringBuilder colorsCounts = new StringBuilder();
 			
 			List<Color> colors = new ArrayList<>();
@@ -106,6 +107,7 @@ public class CsvControllers {
 				moveRateAvarage += animals.get(i).getMove_rate();
 				visionRangeAvarage += animals.get(i).getVision_range();
 				colors.add(animals.get(i).getColor());
+				heightAvarage += animals.get(i).getHeight();
 			}
 			
 			Map<Color, Integer> contagemCores = new HashMap<>();
@@ -124,6 +126,7 @@ public class CsvControllers {
 			
 			moveRateAvarage = moveRateAvarage / animals.size();
 			visionRangeAvarage = visionRangeAvarage / animals.size();
+			heightAvarage = heightAvarage / animals.size();
 			// Escreve os dados da SpecieAnimalia
 			fileWriter.append(Integer.toString(ambiente.getDays()));
 			fileWriter.append(",");
@@ -131,8 +134,10 @@ public class CsvControllers {
 			fileWriter.append(",");
 			fileWriter.append("" + Utils.truncate(moveRateAvarage, 2));
 			fileWriter.append(",");
-			fileWriter.append("" + Utils.truncate(visionRangeAvarage,2));
+			fileWriter.append("" + Utils.truncate(visionRangeAvarage,2));	
 			fileWriter.append(",");
+			fileWriter.append("" + Utils.truncate(heightAvarage,2));
+			fileWriter.append(",");	
 			fileWriter.append(colorsCounts.deleteCharAt(colorsCounts.length() - 1));
 			fileWriter.append("\n");
 
